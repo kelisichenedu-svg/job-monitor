@@ -1,0 +1,91 @@
+name: 每日抓取并发布招聘监控
+
+# 北京时间每天 07:00 自动运行（UTC 23:00），也可在 Actions 页面手动触发
+on:
+  schedule:
+    # 北京时间每天 07:00（UTC 23:00）自动抓取
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+    inputs:
+      rebuild:
+        description: "忽略历史数据全量重建（改了打分规则后勾选）"
+        type: boolean
+        default: false
+  # 首次上传代码、或改动抓取规则后立即跑一次，方便马上验证是否成功。
+  # 只监听代码目录 —— 避免下面自动提交 data/、dist/ 时又触发本工作流造成循环。
+  push:
+    branches: ["main", "master"]
+    paths:
+      - "job-monitor/crawler/**"
+      - "job-monitor/config/**"
+      - "job-monitor/site/**"
+      - ".github/workflows/update.yml"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: job-monitor
+  cancel-in-progress: false
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    # 仓库里代码位于 job-monitor/ 子目录（上传时多套了一层），
+    # 这里统一把工作目录切进去，下面的命令就都能直接找到 crawler/ config/ site/。
+    defaults:
+      run:
+        working-directory: job-monitor
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安装可选解析依赖
+        run: pip install beautifulsoup4
+
+      - name: 抓取岗位数据
+        run: python crawler/crawl.py ${{ inputs.rebuild && '--rebuild' || '' }}
+
+      # 首页列表项的标题常缺单位名，回源详情页把页面原文里的单位名补回来（不做任何推测）。
+      # 每天最多补 40 条，避免一次性发起大量请求。
+      - name: 补全缺失的单位信息（回源取材）
+        run: python crawler/enrich.py --max 40
+
+      # 真实性核验：抽样回源请求原文链接，确认岗位在公开网络上真实存在。
+      # 不设 fail-fast —— 单条链接偶发超时不应阻断发布，但结果会完整打印在 Actions 日志里供追溯。
+      - name: 核验岗位真实性（抽样回源）
+        run: python crawler/verify.py --sample 8
+
+      - name: 生成单文件站点
+        run: python site/build.py
+
+      - name: 提交数据变更
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ dist/
+          if git diff --staged --quiet; then
+            echo "本次无新增岗位，跳过提交"
+          else
+            git commit -m "chore(data): 自动更新岗位数据 $(date -u +'%Y-%m-%d')"
+            git push
+          fi
+
+      - name: 上传站点产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: job-monitor/dist
+
+      - name: 发布到 GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
