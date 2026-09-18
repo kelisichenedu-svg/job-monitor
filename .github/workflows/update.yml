@@ -62,8 +62,10 @@ jobs:
         run: python crawler/enrich.py --max 40
 
       # 真实性核验：抽样回源请求原文链接，确认岗位在公开网络上真实存在。
-      # 不设 fail-fast —— 单条链接偶发超时不应阻断发布，但结果会完整打印在 Actions 日志里供追溯。
+      # 结果完整打印在 Actions 日志里供追溯；单条链接偶发超时不可达时，
+      # 只提示不中断（continue-on-error），避免一次网络抖动就让当天整体发布失败。
       - name: 核验岗位真实性（抽样回源）
+        continue-on-error: true
         run: python crawler/verify.py --sample 8
 
       - name: 生成单文件站点
