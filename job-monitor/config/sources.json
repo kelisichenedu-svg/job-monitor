@@ -1,0 +1,167 @@
+{
+  "_comment": "抓取源配置。三种 type：rss（RSS/Atom）、html（CSS 选择器解析列表页）、json（接口返回 JSON）。拿到新源只需往 sources 数组里加一条。",
+  "_howto": [
+    "rss：给 url 即可，自动解析 <item> / <entry>。",
+    "html：给 url + itemSelector + 字段选择器（title/link/date）；不给 itemSelector 时降级为抽取页面所有链接，此时务必配 linkFilter 只留详情页。",
+    "json：给 url + itemsPath（如 data.list，用 . 分隔）+ 字段路径映射。",
+    "linkFilter：正则，只保留匹配该正则的链接（例 '/detail/' 只留详情页），是过滤噪声的关键开关。",
+    "新增源前先看目标站 robots.txt，不要抓 Disallow 的路径；delaySeconds 不要小于 1.5。"
+  ],
+  "request": {
+    "timeout": 20,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+    "delaySeconds": 2,
+    "maxItemsPerSource": 200
+  },
+  "sources": [
+    {
+      "id": "gxj_med_talent",
+      "name": "高校人才网 · 医学人才",
+      "enabled": true,
+      "type": "html",
+      "url": "https://www.gaoxiaojob.com/column/5.html",
+      "baseUrl": "https://www.gaoxiaojob.com",
+      "linkFilter": "/detail/"
+    },
+    {
+      "id": "gxj_med_postdoc",
+      "name": "高校人才网 · 医疗单位博士后招收",
+      "enabled": true,
+      "type": "html",
+      "url": "https://www.gaoxiaojob.com/column/266.html",
+      "baseUrl": "https://www.gaoxiaojob.com",
+      "linkFilter": "/detail/"
+    },
+    {
+      "id": "gxj_basic_med",
+      "name": "高校人才网 · 基础医学",
+      "enabled": true,
+      "type": "html",
+      "url": "https://www.gaoxiaojob.com/column/200.html",
+      "baseUrl": "https://www.gaoxiaojob.com",
+      "linkFilter": "/detail/"
+    },
+    {
+      "id": "gxj_clinical_med",
+      "name": "高校人才网 · 临床医学",
+      "enabled": true,
+      "type": "html",
+      "url": "https://www.gaoxiaojob.com/column/201.html",
+      "baseUrl": "https://www.gaoxiaojob.com",
+      "linkFilter": "/detail/"
+    },
+    {
+      "id": "gxj_biology",
+      "name": "高校人才网 · 生物学",
+      "enabled": true,
+      "type": "html",
+      "url": "https://www.gaoxiaojob.com/column/146.html",
+      "baseUrl": "https://www.gaoxiaojob.com",
+      "linkFilter": "/detail/"
+    },
+    {
+      "id": "gxj_phd_intro",
+      "name": "高校人才网 · 博士人才引进",
+      "enabled": true,
+      "type": "html",
+      "url": "https://www.gaoxiaojob.com/column/275.html",
+      "baseUrl": "https://www.gaoxiaojob.com",
+      "linkFilter": "/detail/"
+    },
+    {
+      "id": "gaoxiaojob_home",
+      "name": "高校人才网 · 最新招聘公告",
+      "enabled": true,
+      "type": "html",
+      "url": "https://www.gaoxiaojob.com/",
+      "baseUrl": "https://www.gaoxiaojob.com",
+      "linkFilter": "/(announcement|daily|news|company)/detail/",
+      "note": "国内高校/医院/科研院所招聘聚合站，更新量最大；robots.txt 允许抓首页与详情路径"
+    },
+    {
+      "id": "gaoxiaojob_postdoc",
+      "name": "高校人才网 · 博士后频道",
+      "enabled": true,
+      "type": "html",
+      "url": "https://boshihou.gaoxiaojob.com/",
+      "baseUrl": "https://boshihou.gaoxiaojob.com",
+      "linkFilter": "/detail/",
+      "note": "博士后专项频道，与博士背景最对口"
+    },
+    {
+      "id": "bsh_guangdong",
+      "name": "博士后人才网 · 广东栏目",
+      "enabled": true,
+      "type": "html",
+      "url": "http://www.boshihoujob.com/gxbsh/guangdong/",
+      "baseUrl": "http://www.boshihoujob.com",
+      "encoding": "gbk",
+      "linkFilter": "/gxbsh/guangdong/\\d+\\.html",
+      "provinceHint": "广东",
+      "pagination": {"pattern": "http://www.boshihoujob.com/gxbsh/guangdong/list_249_{n}.html", "pages": 20},
+      "note": "博士后人才网按省份归档栏目，GBK 编码；只收该省详情页，地区闸门二次兜底"
+    },
+    {
+      "id": "bsh_fujian",
+      "name": "博士后人才网 · 福建栏目",
+      "enabled": true,
+      "type": "html",
+      "url": "http://www.boshihoujob.com/gxbsh/fujian/",
+      "baseUrl": "http://www.boshihoujob.com",
+      "encoding": "gbk",
+      "linkFilter": "/gxbsh/fujian/\\d+\\.html",
+      "provinceHint": "福建",
+      "pagination": {"pattern": "http://www.boshihoujob.com/gxbsh/fujian/list_244_{n}.html", "pages": 20},
+      "note": "博士后人才网福建栏目，GBK 编码"
+    },
+    {
+      "id": "bsh_zhejiang",
+      "name": "博士后人才网 · 浙江栏目",
+      "enabled": true,
+      "type": "html",
+      "url": "http://www.boshihoujob.com/gxbsh/zhejiang/",
+      "baseUrl": "http://www.boshihoujob.com",
+      "encoding": "gbk",
+      "linkFilter": "/gxbsh/zhejiang/\\d+\\.html",
+      "provinceHint": "浙江",
+      "pagination": {"pattern": "http://www.boshihoujob.com/gxbsh/zhejiang/list_242_{n}.html", "pages": 20},
+      "note": "博士后人才网浙江栏目，GBK 编码"
+    },
+    {
+      "id": "bsh_jiangsu",
+      "name": "博士后人才网 · 江苏栏目",
+      "enabled": true,
+      "type": "html",
+      "url": "http://www.boshihoujob.com/gxbsh/jiangsu/",
+      "baseUrl": "http://www.boshihoujob.com",
+      "encoding": "gbk",
+      "linkFilter": "/gxbsh/jiangsu/\\d+\\.html",
+      "provinceHint": "江苏",
+      "pagination": {"pattern": "http://www.boshihoujob.com/gxbsh/jiangsu/list_241_{n}.html", "pages": 20},
+      "note": "博士后人才网江苏栏目，GBK 编码"
+    },
+    {
+      "id": "demo_rss_placeholder",
+      "name": "示例源（RSS 类型，待替换）",
+      "enabled": false,
+      "type": "rss",
+      "url": "https://example.com/jobs/feed.xml",
+      "note": "把 url 换成你要监控的站点 RSS 地址，enabled 改成 true 即可生效"
+    },
+    {
+      "id": "demo_html_placeholder",
+      "name": "示例源（HTML 类型，待替换）",
+      "enabled": false,
+      "type": "html",
+      "url": "https://example.com/hr/list.html",
+      "itemSelector": "ul.job-list li",
+      "fields": {
+        "title": "a.job-title",
+        "link": "a.job-title@href",
+        "date": "span.date"
+      },
+      "baseUrl": "https://example.com",
+      "note": "link 写 'sel@href' 取属性、'sel' 取文本；相对路径会自动用 baseUrl 补全"
+    }
+  ]
+}

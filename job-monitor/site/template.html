@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<!-- 本工作台通过 WorkBuddy「资料库」skill 搭建、存储和部署 -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="君来暴富 · 肿瘤学方向博士/博士后 AI 招聘监控，每日自动更新">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>君来暴富 · AI 招聘监控</title>
+<style>
+:root{
+  --blue:#2563EB; --blue-dark:#1D4ED8; --ink:#1E293B; --sub:#64748B;
+  --line:#E2E8F0; --bg:#FFFFFF; --soft:#F8FAFC;
+  --green:#059669; --orange:#D97706; --red:#DC2626;
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--ink); font-size:15px; line-height:1.6;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+svg{display:block;flex:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font-family:inherit;font-size:16px}
+
+/* ---------- 顶部导航 ---------- */
+header{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:30}
+.hd{display:flex;align-items:center;gap:12px;padding:14px 0;flex-wrap:wrap}
+.logo{width:36px;height:36px;border-radius:9px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex:none}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand b{font-size:18px;font-weight:700;letter-spacing:.5px}
+.brand span{font-size:12px;color:var(--sub)}
+.hd-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.date{font-size:12px;color:var(--sub)}
+.btn-sub{display:flex;align-items:center;gap:6px;background:var(--blue);color:#fff;
+  padding:9px 16px;border-radius:8px;font-size:14px;font-weight:600;min-height:44px}
+.btn-sub:hover{background:var(--blue-dark)}
+
+/* ---------- 统计面板 ---------- */
+.prov{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;background:var(--soft);
+  border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin:16px 0 0;
+  font-size:12px;color:var(--sub)}
+.prov b{color:#0F172A;font-weight:600}
+.prov .ok{display:inline-flex;align-items:center;gap:5px;color:#15803D}
+.prov .warn{display:inline-flex;align-items:center;gap:5px;color:#B45309;
+  background:#FEF3C7;border-radius:6px;padding:3px 8px;font-weight:600}
+@media(max-width:768px){.prov{font-size:11px;gap:4px 10px;padding:9px 12px}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.stat{background:var(--soft);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.stat .n{font-size:24px;font-weight:700;line-height:1.2}
+.stat .l{font-size:12px;color:var(--sub);margin-top:2px}
+
+/* ---------- 筛选栏 ---------- */
+.filters{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:16px}
+.frow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.fgroup{display:flex;align-items:center;gap:6px}
+.fgroup label{font-size:12px;color:var(--sub);flex:none}
+select,input[type=search]{border:1px solid var(--line);border-radius:8px;padding:9px 10px;
+  background:#fff;min-height:44px;color:var(--ink);outline:none}
+select:focus,input[type=search]:focus{border-color:var(--blue)}
+input[type=search]{flex:1;min-width:150px}
+.link-btn{font-size:13px;color:var(--blue);padding:8px 4px;min-height:44px;display:flex;align-items:center}
+
+/* ---------- Tab ---------- */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:16px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:flex;align-items:center;gap:6px;white-space:nowrap;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--line);font-size:14px;background:#fff;min-height:44px;color:var(--ink)}
+.tab:hover{border-color:var(--blue);color:var(--blue)}
+.tab.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.tab .cnt{font-size:11px;opacity:.75}
+
+/* ---------- Banner ---------- */
+.banner{border-radius:var(--radius);padding:16px 18px;color:#fff;margin-bottom:16px}
+.banner h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+.banner p{font-size:13px;opacity:.92;margin-top:4px}
+.b-blue{background:linear-gradient(135deg,#2563EB,#3B82F6)}
+.b-rose{background:linear-gradient(135deg,#E11D48,#F43F5E)}
+.b-orange{background:linear-gradient(135deg,#F97316,#F59E0B)}
+.b-purple{background:linear-gradient(135deg,#7C3AED,#6366F1)}
+.b-cyan{background:linear-gradient(135deg,#0891B2,#06B6D4)}
+.b-teal{background:linear-gradient(135deg,#14B8A6,#22D3EE)}
+
+/* ---------- 分组标题 ---------- */
+.gtitle{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;margin:18px 0 10px;color:var(--ink)}
+.gtitle .dot{width:4px;height:16px;border-radius:2px;background:var(--blue)}
+
+/* ---------- 岗位卡片 ---------- */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:12px;
+  overflow:hidden;position:relative;transition:box-shadow .15s}
+.card:hover{box-shadow:0 2px 10px rgba(30,41,59,.07)}
+.card.star::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue)}
+.cmain{padding:16px 18px;width:100%;text-align:left;display:block}
+.c1{display:flex;align-items:flex-start;gap:12px}
+.ctitle{flex:1;min-width:0}
+.ctitle h3{font-size:16px;font-weight:700;line-height:1.45;word-break:break-word}
+.cunit{font-size:13px;color:var(--sub);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 7px;border-radius:5px;background:var(--soft);color:var(--sub);border:1px solid var(--line)}
+.badge.star{background:#EFF6FF;color:var(--blue);border-color:#BFDBFE}
+.score{flex:none;width:56px;text-align:center;border-radius:10px;padding:8px 4px;color:#fff;margin-right:44px}
+.score .v{font-size:19px;font-weight:700;line-height:1.1}
+.score .t{font-size:10px;opacity:.92}
+.s-green{background:linear-gradient(135deg,#059669,#10B981)}
+.s-blue{background:linear-gradient(135deg,#2563EB,#3B82F6)}
+.s-orange{background:linear-gradient(135deg,#D97706,#F59E0B)}
+.s-gray{background:linear-gradient(135deg,#64748B,#94A3B8)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:12px;color:var(--sub);align-items:center}
+.meta span{display:inline-flex;align-items:center;gap:4px}
+.chip{font-size:11px;padding:2px 8px;border-radius:5px}
+.d-long{background:#F0FDF4;color:#059669}
+.d-soon{background:#FFF7ED;color:#D97706}
+.d-norm{background:#F1F5F9;color:#64748B}
+.chev{margin-left:auto;flex:none;transition:transform .2s}
+.card.open .chev{transform:rotate(180deg)}
+/* ---------- 收藏按钮 ---------- */
+.fav-btn{position:absolute;top:9px;right:11px;z-index:5;width:38px;height:38px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.9);
+  border:1px solid var(--line);color:var(--sub);transition:transform .12s,background .12s,border-color .12s}
+.fav-btn.on{background:#FFF7ED;border-color:#FDBA74;color:#EA580C}
+.fav-btn:active{transform:scale(.92)}
+
+.cdetail{display:none;border-top:1px solid var(--line);padding:16px 18px;background:#FCFDFF}
+.card.open .cdetail{display:block}
+.dl{font-size:13px;margin-bottom:12px}
+.dl b{display:block;font-size:12px;color:var(--blue);margin-bottom:3px}
+.dl p{color:var(--ink);line-height:1.7}
+.cfoot{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.btn-link{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;
+  padding:10px 16px;border-radius:8px;font-size:14px;font-weight:600;min-height:44px;text-decoration:none}
+.btn-link:hover{background:var(--blue-dark)}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);color:var(--sub);
+  padding:10px 14px;border-radius:8px;font-size:13px;min-height:44px}
+
+/* ---------- 使用说明 ---------- */
+.doc{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.doc h3{font-size:15px;font-weight:700;margin:16px 0 8px}
+.doc h3:first-child{margin-top:0}
+.doc p,.doc li{font-size:14px;color:var(--ink);line-height:1.8}
+.doc ul{padding-left:20px}
+.doc code{background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:13px}
+
+/* ---------- 空态 / 页脚 ---------- */
+.more-btn{width:100%;padding:13px;border:1px solid var(--line);border-radius:8px;background:#fff;
+  color:var(--blue);font-size:14px;font-weight:600;min-height:44px;margin:8px 0 24px}
+.more-btn:hover{background:var(--soft)}
+.empty{text-align:center;padding:48px 16px;color:var(--sub);font-size:14px}
+.empty svg{margin:0 auto}
+footer{border-top:1px solid var(--line);margin-top:32px;padding:20px 0 32px;font-size:12px;color:var(--sub);line-height:1.8}
+
+/* ---------- 弹窗 ---------- */
+.mask{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;
+  justify-content:center;z-index:60;padding:16px}
+.mask.on{display:flex}
+.modal{background:#fff;border-radius:14px;padding:24px;max-width:380px;width:100%}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.modal p{font-size:13px;color:var(--sub);margin-bottom:14px}
+.modal input{width:100%;border:1px solid var(--line);border-radius:8px;padding:12px;min-height:44px;outline:none}
+.modal input:focus{border-color:var(--blue)}
+.mbtns{display:flex;gap:10px;margin-top:14px}
+.mbtns button{flex:1;min-height:44px;border-radius:8px;font-size:14px;font-weight:600}
+.m-main{background:var(--blue);color:#fff}
+.m-main:hover{background:var(--blue-dark)}
+.m-cancel{border:1px solid var(--line);color:var(--sub)}
+.ok{color:var(--green);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;margin-top:8px}
+
+/* ---------- 移动端 ---------- */
+@media (max-width:768px){
+  .wrap{padding:0 12px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .brand b{font-size:16px}
+  .date{display:none}
+  .filters{padding:12px}
+  .frow{gap:8px}
+  .fgroup{width:100%}
+  .fgroup select{flex:1;width:100%}
+  .cmain{padding:14px}
+  .cdetail{padding:14px}
+  .ctitle h3{font-size:15px}
+  .banner{padding:14px}
+  .banner h2{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hd">
+    <div class="logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+    </div>
+    <div class="brand">
+      <b>君来暴富</b>
+      <span>肿瘤学博士 · AI 招聘监控</span>
+    </div>
+    <div class="hd-right">
+      <span class="date" id="hdDate"></span>
+      <button class="btn-sub" onclick="openModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        订阅更新
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="prov" id="prov"></section>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="filters">
+    <div class="frow">
+      <div class="fgroup"><label>省份</label><select id="fProvince"><option value="">全部</option></select></div>
+      <div class="fgroup"><label>类别</label><select id="fCategory"><option value="">全部</option></select></div>
+      <div class="fgroup"><label>匹配度</label><select id="fMatch"><option value="">全部</option></select></div>
+      <input type="search" id="fKeyword" placeholder="搜索单位 / 岗位 / 方向">
+      <button class="link-btn" onclick="resetFilters()">重置</button>
+    </div>
+  </section>
+
+  <nav class="tabs" id="tabs"></nav>
+
+  <div id="banner"></div>
+  <div id="content"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>君来暴富 · 肿瘤学方向 AI 招聘监控　数据每日自动抓取更新</div>
+    <div>岗位信息均转载自公开招聘公告，版权归原发布单位所有；投递请以官方原文为准。</div>
+    <div id="ftMeta"></div>
+  </div>
+</footer>
+
+<div class="mask" id="mask" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3>订阅每日岗位推送</h3>
+    <p>留下邮箱，每天新岗位入库时通知你。</p>
+    <input type="email" id="emailInput" placeholder="you@example.com">
+    <div id="subMsg"></div>
+    <div class="mbtns">
+      <button class="m-cancel" onclick="closeModal()">取消</button>
+      <button class="m-main" onclick="submitSub()">确认订阅</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= 数据（由 build.py 注入） ================= */
+var JOBS = /*__JOBS_DATA__*/[];
+var META = /*__META_DATA__*/{};
+
+/* ================= 图标（内联 SVG，不用 emoji） ================= */
+var ICONS = {
+  fire:'<path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-1 .5-2 .5-2S6 10 6 14a6 6 0 0 0 12 0c0-5-6-12-6-12z"/>',
+  star:'<path d="M12 2l3 6.5 7 .8-5 4.7 1.4 7L12 17.8 5.6 21 7 14 2 9.3l7-.8z"/>',
+  hospital:'<path d="M12 6v4M9 8h6"/><path d="M4 21V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16"/><path d="M4 15h16"/>',
+  school:'<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M6 10v6c0 1.5 3 3 6 3s6-1.5 6-3v-6"/>',
+  flask:'<path d="M9 3h6"/><path d="M10 3v6L5 19a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 19l-5-10V3"/>',
+  pin:'<path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  tag:'<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7-7A2 2 0 0 1 3 12.2V4a1 1 0 0 1 1-1h8.2a2 2 0 0 1 1.4.6l7 7a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/>',
+  book:'<path d="M4 4a2 2 0 0 1 2-2h14v18H6a2 2 0 0 0-2 2V4z"/><path d="M4 20a2 2 0 0 1 2-2h14"/>',
+  cup:'<path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M12 14v3M9 21h6"/>',
+  chev:'<path d="M6 9l6 6 6-6"/>',
+  ext:'<path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  check:'<path d="M20 6L9 17l-5-5"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  yuan:'<path d="M7 5l5 7 5-7"/><path d="M12 12v7"/><path d="M8.5 14h7M8.5 17h7"/>',
+  map:'<path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>'
+};
+function svg(name, size, color, sw){
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="'+(color||'currentColor')+
+         '" stroke-width="'+(sw||2)+'" stroke-linecap="round" stroke-linejoin="round">'+ICONS[name]+'</svg>';
+}
+
+/* ================= Tab 定义 ================= */
+var TABS = [
+  {k:'featured', n:'今日推荐',  i:'fire',     c:'b-blue',   d:'按你的背景（肿瘤学博士）自动挑选的高价值岗位，仅含广东/福建地区'},
+  {k:'sz',       n:'深圳专区',  i:'pin',      c:'b-cyan',   d:'深圳本地岗位，地域优先级最高'},
+  {k:'first',    n:'第一志愿',  i:'cup',      c:'b-rose',   d:'三甲医院与高校正式岗位，要求博士学历，平台与稳定性最优'},
+  {k:'second',   n:'第二志愿',  i:'school',   c:'b-orange', d:'二甲医院、专科院校、事业单位，门槛相对友好'},
+  {k:'third',    n:'第三志愿',  i:'flask',    c:'b-purple', d:'生物医药企业与医药类岗位，作为产业界机会储备'},
+  {k:'other',    n:'其它',      i:'tag',      c:'b-teal',   d:'博士后通道及要求博士的其它岗位'},
+  {k:'all',      n:'全部岗位',  i:'list',     c:'',         d:'所有已收录岗位（仅广东/福建/浙江/江苏），按匹配度排序'},
+  {k:'fav',      n:'我的收藏',  i:'star',     c:'b-amber',  d:'你收藏的岗位，仅保存在本机浏览器，不会上传'},
+  {k:'doc',      n:'使用说明',  i:'book',     c:'',         d:''}
+];
+
+/* ================= 状态与阈值 ================= */
+var PAGE_STEP = 60;   // 每屏渲染条数，避免几百张卡片一次性进 DOM 拖慢手机
+var state = {tab:'featured', province:'', category:'', match:'', kw:'', open:{}, limit:PAGE_STEP};
+var STAR_SCORE = /*__STAR_SCORE__*/90;   // 由 build.py 从 config/profile.json 注入，勿手改
+/* 匹配度四档阈值：同样来自 config/profile.json 的 thresholds.matchTiers。
+   页面上的分档颜色、筛选器选项、后端 matchLabel 三处共用这一份，避免口径打架。 */
+var MT = /*__TIERS_DATA__*/{excellent:85,high:75,mid:65};
+
+/* ================= 计算层：筛选 ================= */
+function baseFiltered(){
+  var kw = state.kw.trim().toLowerCase();
+  return JOBS.filter(function(j){
+    if(state.province && j.province !== state.province) return false;
+    if(state.category && j.category !== state.category) return false;
+    if(state.match){
+      var s = j.matchScore||0;
+      if(state.match==='excellent' && s < MT.excellent) return false;
+      if(state.match==='high'      && (s < MT.high || s >= MT.excellent)) return false;
+      if(state.match==='mid'       && (s < MT.mid  || s >= MT.high)) return false;
+      if(state.match==='low'       && s >= MT.mid) return false;
+    }
+    if(kw){
+      var hay = [j.unit,j.title,j.city,j.direction,j.category,j.unitTag].join(' ').toLowerCase();
+      if(hay.indexOf(kw) === -1) return false;
+    }
+    return true;
+  });
+}
+function has(j,key){ return (j.requirements||'').indexOf(key) !== -1; }
+function isFirst(j){ return (j.unitTag==='高校'||j.category==='医院') && has(j,'博士') && j.category!=='博士后'; }
+function isSecond(j){
+  return (j.unitTag==='二甲医院'||j.unitTag==='专科院校'||j.unitTag==='事业单位') && j.category!=='博士后';
+}
+function isThird(j){
+  if(isFirst(j)||isSecond(j)) return false;
+  return (j.category||'').indexOf('生物医药')!==-1 || (j.unitTag||'').indexOf('医药')!==-1
+         || has(j,'肿瘤');
+}
+function tabFiltered(){
+  var list = baseFiltered();
+  if(state.tab==='all')      return list;
+  if(state.tab==='featured') return list.filter(isFeaturedShown);
+  if(state.tab==='first')    return list.filter(isFirst);
+  if(state.tab==='second')   return list.filter(isSecond);
+  if(state.tab==='third')    return list.filter(isThird);
+  if(state.tab==='sz')       return list.filter(function(j){ return j.city==='深圳'; });
+  if(state.tab==='other')    return list.filter(function(j){ return has(j,'博士') || j.category==='博士后'; });
+  if(state.tab==='fav')      return list.filter(isFav);
+  return [];
+}
+function groupsFor(){
+  var list = tabFiltered();
+  if(state.tab==='featured'){
+    var shown = list.filter(isFeaturedShown);
+    var star = shown.filter(function(j){ return (j.matchScore||0) >= STAR_SCORE; });
+    var rest = shown.filter(function(j){ return (j.matchScore||0) < STAR_SCORE; });
+    return [{t:'重点推荐', i:'star', items:star}, {t:'其他推荐', i:'fire', items:rest}];
+  }
+  if(state.tab==='first'){
+    return [
+      {t:'医院', i:'hospital', items:list.filter(function(j){ return j.category==='医院'; })},
+      {t:'高校', i:'school',   items:list.filter(function(j){ return j.unitTag==='高校'; })}
+    ];
+  }
+  return [{t:'', i:'', items:list}];
+}
+
+/* ================= 渲染层（互不调用，统一由 refreshAll 调度） ================= */
+function esc(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+// 分档阈值统一取 MT（由 config/profile.json 注入），与 crawler/normalize.py 的 match_label 同源
+function scoreClass(s){ return s>=MT.excellent?'s-green':s>=MT.high?'s-blue':s>=MT.mid?'s-orange':'s-gray'; }
+function deadlineChip(d){
+  var cls='d-norm', txt=d||'详见正文';
+  if(d==='长期有效'||d==='长期'||d==='招满即止'){ cls='d-long'; }
+  else if(/^\d{4}-\d{2}-\d{2}$/.test(d||'')){
+    var t0=new Date(); t0.setHours(0,0,0,0);
+    var t1=new Date(d+'T00:00:00');
+    var days=Math.round((t1-t0)/86400000);
+    if(days<0){ cls='d-soon'; txt='已过期'; }
+    else if(days<=3){ cls='d-soon'; txt='仅剩 '+days+' 天'; }
+  }
+  return '<span class="chip '+cls+'">'+esc(txt)+'</span>';
+}
+function cardHTML(j){
+  var open = !!state.open[j.id];
+  var s = j.matchScore||0;
+  var detail = '';
+  if(open){
+    detail =
+      '<div class="cdetail">'+
+        '<div class="dl"><b>岗位描述</b><p>'+esc(j.description)+'</p></div>'+
+        '<div class="dl"><b>任职要求</b><p>'+esc(j.requirements)+'</p></div>'+
+        '<div class="dl"><b>推荐理由</b><p>'+esc(j.reason)+'</p></div>'+
+        '<div class="dl"><b>人才引进政策</b><p>'+esc(j.talentPlan)+'</p></div>'+
+        '<div class="cfoot">'+
+          (j.link?'<a class="btn-link" href="'+esc(j.link)+'" target="_blank" rel="noopener">'+svg('ext',15,'#fff')+'查看原文</a>':'')+
+          '<button class="btn-ghost" onclick="copyJob(\''+j.id+'\')">复制岗位信息</button>'+
+        '</div>'+
+      '</div>';
+  }
+  return '<article class="card'+(open?' open':'')+((j.matchScore||0)>=STAR_SCORE?' star':'')+'" id="card-'+j.id+'">'+
+    '<button class="cmain" onclick="toggleCard(\''+j.id+'\')">'+
+      '<div class="c1">'+
+        '<div class="ctitle">'+
+          '<h3>'+((j.matchScore||0)>=STAR_SCORE?'<span style="color:#2563EB">'+svg('star',14,'#2563EB')+'</span> ':'')+esc(j.title)+'</h3>'+
+          '<div class="cunit">'+svg('map',12,'#64748B')+esc(j.unit)+
+            '<span class="badge">'+esc(j.unitTag||'未分类')+'</span>'+
+            '<span class="badge">'+esc(j.category||'')+'</span>'+
+            ((j.matchScore||0)>=STAR_SCORE?'<span class="badge star">重点推荐</span>':'')+
+          '</div>'+
+        '</div>'+
+        '<div class="score '+scoreClass(s)+'"><div class="v">'+s+'</div><div class="t">'+esc(j.matchLabel||'')+'</div></div>'+
+      '</div>'+
+      '<div class="meta">'+
+        '<span>'+svg('pin',12,'#64748B')+esc(j.city)+(j.province&&j.province!==j.city?' · '+esc(j.province):'')+'</span>'+
+        '<span>'+svg('yuan',12,'#64748B')+esc(j.salary||'面议')+'</span>'+
+        svg('clock',12,'#64748B')+deadlineChip(j.deadline)+
+        '<span class="chev">'+svg('chev',16,'#94A3B8')+'</span>'+
+      '</div>'+
+    '</button>'+
+    '<button class="fav-btn'+(isFav(j)?' on':'')+'" id="fav-'+j.id+'" onclick="toggleFav(\''+j.id+'\')" aria-label="收藏岗位">'+
+      favIcon(isFav(j))+
+    '</button>'+
+    detail+
+  '</article>';
+}
+function isFeatured(j){ return !!j.featured; }
+/* 今日推荐只展示广东 / 福建地区岗位（用户硬性要求） */
+function inYueMin(j){ return j.province==='广东' || j.province==='福建'; }
+function isFeaturedShown(j){ return isFeatured(j) && inYueMin(j); }
+/* 数据来源声明：所有岗位均来自公开网络抓取，每条都带原文链接可点回核验 */
+function renderProvenance(){
+  var m = META||{};
+  var el = document.getElementById('prov');
+  if(!el) return;
+  var srcs = {};
+  JOBS.forEach(function(j){ if(j.source) srcs[j.source]=1; });
+  var srcNames = Object.keys(srcs);
+  var html =
+    '<span class="ok">'+
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" '+
+      'stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+
+      '全部岗位均抓取自公开网络，每条附原文链接可核验'+
+    '</span>'+
+    '<span>来源：<b>'+(srcNames.length?srcNames.join('、'):'未启用')+'</b></span>'+
+    (m.updatedAt ? '<span>更新：<b>'+esc(m.updatedAt)+'</b></span>' : '')+
+    (m.stale ? '<span class="warn">本次抓取未取到新数据（源可能故障），展示的是上一次真实抓取结果</span>' : '');
+  el.innerHTML = html;
+}
+function renderStats(){
+  var prov = {}; JOBS.forEach(function(j){ if(j.province&&j.province!=='未知') prov[j.province]=1; });
+  var items = [
+    {n:JOBS.length, l:'收录岗位'},
+    {n:JOBS.filter(isFeaturedShown).length, l:'今日推荐'},
+    {n:Object.keys(prov).length, l:'覆盖省份'},
+    {n:(META&&META.coreDirection)||JOBS.filter(function(j){return j.coreDirection;}).length, l:'肿瘤方向'}
+  ];
+  document.getElementById('stats').innerHTML = items.map(function(it){
+    return '<div class="stat"><div class="n">'+it.n+'</div><div class="l">'+it.l+'</div></div>';
+  }).join('');
+}
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = TABS.map(function(t){
+    var n = t.k==='doc' ? '' : tabFilteredFor(t.k).length;
+    return '<button class="tab'+(state.tab===t.k?' on':'')+'" onclick="switchTab(\''+t.k+'\')">'+
+      svg(t.i,15)+t.n+(n?' <span class="cnt">'+n+'</span>':'')+'</button>';
+  }).join('');
+}
+function tabFilteredFor(k){
+  var save = state.tab; state.tab = k;
+  var r = tabFiltered(); state.tab = save;
+  return r;
+}
+function renderBanner(){
+  var box = document.getElementById('banner');
+  var t = TABS.filter(function(x){return x.k===state.tab;})[0];
+  if(!t || !t.c || state.tab==='doc'){ box.innerHTML=''; return; }
+  var n = tabFiltered().length;
+  box.innerHTML = '<div class="banner '+t.c+'"><h2>'+svg(t.i,17,'#fff')+esc(t.n)+
+    '　共 '+n+' 个岗位</h2><p>'+esc(t.d)+'</p></div>';
+}
+function renderContent(){
+  var box = document.getElementById('content');
+  if(state.tab==='doc'){ box.innerHTML = docHTML(); return; }
+  var gs = groupsFor();
+  var html = '', shown = 0, total = 0;
+  gs.forEach(function(g){ total += (g.items || []).length; });
+  gs.forEach(function(g){
+    var items = g.items || [];
+    if(!items.length) return;
+    var room = state.limit - shown;
+    if(room <= 0) return;
+    var slice = items.slice(0, room);
+    shown += slice.length;
+    if(g.t) html += '<div class="gtitle"><span class="dot"></span>'+svg(g.i,15,'#2563EB')+esc(g.t)+'（'+items.length+'）</div>';
+    html += slice.map(cardHTML).join('');
+  });
+  if(shown < total){
+    html += '<button class="more-btn" onclick="loadMore()">显示更多（还有 '+(total - shown)+' 条）</button>';
+  }
+  if(!html){
+    if(state.tab==='fav'){
+      html = '<div class="empty">'+favIcon(true)+
+        '<p style="margin-top:12px">还没有收藏的岗位</p>'+
+        '<p style="margin-top:4px">点击任意岗位卡片右上角的 ★ 即可收藏，这里会汇总你收藏的岗位</p></div>';
+    } else {
+      html = '<div class="empty">'+svg('list',28,'#CBD5E1')+
+        '<p style="margin-top:10px">当前筛选条件下没有岗位</p>'+
+        '<p style="margin-top:4px">试试放宽省份 / 匹配度，或切换到「全部岗位」</p></div>';
+    }
+  }
+  box.innerHTML = html;
+}
+function docHTML(){
+  return '<div class="doc">'+
+    '<h3>这是什么</h3>'+
+    '<p>面向肿瘤学方向博士 / 博士后的招聘监控页面。后台每天自动抓取配置的招聘源，经过滤、去重、匹配度打分后生成此页，打开即是最新岗位。</p>'+
+    '<h3>匹配度怎么算</h3>'+
+    '<ul>'+
+      '<li>方向契合：肿瘤、oncology、cancer、免疫治疗等关键词</li>'+
+      '<li>学历对口：博士、博士后、PhD</li>'+
+      '<li>单位平台：三甲医院 / 高校 / 科研院所 &gt; 二甲医院 / 专科院校 &gt; 医药企业</li>'+
+      '<li>地域偏好：深圳 &gt; 福建（厦门、福州）&gt; 长三角（杭州、南京、苏州）</li>'+
+    '</ul>'+
+    '<p style="color:#64748B;font-size:13px">88 分及以上为「极高匹配」，80-87 为「高匹配」，72-79 为「中等匹配」。</p>'+
+    '<h3>志愿梯度说明</h3>'+
+    '<ul>'+
+      '<li>第一志愿：三甲医院 / 高校且要求博士</li>'+
+      '<li>第二志愿：二甲医院 / 专科院校 / 事业单位</li>'+
+      '<li>第三志愿：生物医药企业等产业界机会</li>'+
+      '<li>深圳专区：城市为深圳的全部岗位</li>'+
+    '</ul>'+
+    '<h3>数据更新</h3>'+
+    '<p>每日自动抓取一次。岗位按截止日期自动失效清理，标注「长期有效」的常驻。点击卡片可展开查看任职要求、推荐理由与原文链接。</p>'+
+    '<h3>隐私说明</h3>'+
+    '<p>本页为公开静态页面，数据只存在你自己的浏览器（收藏状态与筛选条件），不会上传任何个人信息。</p>'+
+  '</div>';
+}
+function renderFooter(){
+  var m = META||{};
+  document.getElementById('ftMeta').textContent =
+    (m.updatedAt ? '数据更新时间：'+m.updatedAt+'　' : '') +
+    '离线缓存：数据已内嵌，断网也能浏览';
+}
+function renderHeaderDate(){
+  var d = new Date();
+  document.getElementById('hdDate').textContent =
+    d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' 更新';
+}
+function initFilterOptions(){
+  var provs = {}, cats = {};
+  JOBS.forEach(function(j){
+    if(j.province && j.province!=='未知') provs[j.province]=1;
+    if(j.category) cats[j.category]=1;
+  });
+  var ps = document.getElementById('fProvince');
+  Object.keys(provs).sort().forEach(function(p){
+    var o=document.createElement('option'); o.value=p; o.textContent=p; ps.appendChild(o);
+  });
+  var cs = document.getElementById('fCategory');
+  Object.keys(cats).sort().forEach(function(c){
+    var o=document.createElement('option'); o.value=c; o.textContent=c; cs.appendChild(o);
+  });
+
+  // 匹配度选项按 MT 生成，文案与筛选口径天然一致，不会出现「写着 ≥95 实际按 88 筛」
+  var fm = document.getElementById('fMatch');
+  fm.innerHTML =
+    '<option value="">全部</option>'+
+    '<option value="excellent">极高匹配 ≥'+MT.excellent+'（'+countByScore(MT.excellent, 999)+'）</option>'+
+    '<option value="high">高匹配 '+MT.high+'–'+(MT.excellent-1)+'（'+countByScore(MT.high, MT.excellent-1)+'）</option>'+
+    '<option value="mid">中等匹配 '+MT.mid+'–'+(MT.high-1)+'（'+countByScore(MT.mid, MT.high-1)+'）</option>'+
+    '<option value="low">一般匹配 &lt;'+MT.mid+'（'+countByScore(0, MT.mid-1)+'）</option>';
+}
+/* 统计某分数区间的岗位数，供筛选器显示数量提示 */
+function countByScore(lo, hi){
+  return JOBS.filter(function(j){
+    var s = j.matchScore||0;
+    return s>=lo && s<=hi;
+  }).length;
+}
+function refreshAll(){
+  renderProvenance(); renderStats(); renderTabs(); renderBanner(); renderContent(); renderFooter();
+}
+
+/* ================= 收藏（localStorage 本机保存，不依赖后端） ================= */
+var FAV_KEY = 'wb_jobmonitor_fav';
+var favSet = new Set();
+function loadFavs(){
+  try{
+    var a = JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+    if(Array.isArray(a)) favSet = new Set(a.map(String));
+  }catch(e){ favSet = new Set(); }
+}
+function saveFavs(){
+  try{ localStorage.setItem(FAV_KEY, JSON.stringify(Array.from(favSet))); }catch(e){}
+}
+function isFav(j){ return favSet.has(String(j.id)); }
+function favIcon(on){
+  return '<svg width="18" height="18" viewBox="0 0 24 24" fill="'+(on?'#EA580C':'none')+
+    '" stroke="'+(on?'#EA580C':'#94A3B8')+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+    '<path d="M12 2l3 6.5 7 .8-5 4.7 1.4 7L12 17.8 5.6 21 7 14 2 9.3l7-.8z"/></svg>';
+}
+function toggleFav(id){
+  var on = !favSet.has(String(id));
+  if(on) favSet.add(String(id)); else favSet.delete(String(id));
+  saveFavs();
+  var btn = document.getElementById('fav-'+id);
+  if(btn){ btn.classList.toggle('on', on); btn.innerHTML = favIcon(on); }
+  if(state.tab==='fav') renderContent();
+  renderTabs();
+}
+
+/* ================= 事件（改 state → refreshAll，渲染函数之间不互调） ================= */
+function switchTab(k){ state.tab=k; state.open={}; state.limit=PAGE_STEP; refreshAll(); }
+function toggleCard(id){ state.open[id] = !state.open[id]; renderContent(); }
+function loadMore(){ state.limit += PAGE_STEP; renderContent(); }
+function resetFilters(){
+  state.province=''; state.category=''; state.match=''; state.kw=''; state.limit=PAGE_STEP;
+  document.getElementById('fProvince').value='';
+  document.getElementById('fCategory').value='';
+  document.getElementById('fMatch').value='';
+  document.getElementById('fKeyword').value='';
+  refreshAll();
+}
+function copyJob(id){
+  var j = JOBS.filter(function(x){return String(x.id)===String(id);})[0];
+  if(!j) return;
+  var txt = j.title+'\n单位：'+j.unit+'（'+j.city+'）\n匹配度：'+j.matchScore+'\n薪资：'+j.salary+
+            '\n截止：'+j.deadline+'\n方向：'+j.direction+'\n链接：'+(j.link||'无');
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt); }
+  alert('岗位信息已复制');
+}
+function openModal(){ document.getElementById('mask').classList.add('on'); }
+function closeModal(){
+  document.getElementById('mask').classList.remove('on');
+  document.getElementById('subMsg').innerHTML='';
+}
+function submitSub(){
+  var v = document.getElementById('emailInput').value.trim();
+  if(!/^\S+@\S+\.\S+$/.test(v)){
+    document.getElementById('subMsg').innerHTML='<p style="color:#DC2626">请填写有效邮箱</p>';
+    return;
+  }
+  try{ localStorage.setItem('wb_jobmonitor_email', v); }catch(e){}
+  document.getElementById('subMsg').innerHTML =
+    '<div class="ok">'+svg('check',15,'#059669')+'订阅成功！每日更新将发送至 '+v+'</div>';
+}
+
+/* ================= 初始化（单一入口） ================= */
+document.addEventListener('DOMContentLoaded', function(){
+  renderHeaderDate();
+  loadFavs();
+  initFilterOptions();
+  function onFilter(setter){
+    return function(e){ setter(e.target.value); state.limit = PAGE_STEP; refreshAll(); };
+  }
+  document.getElementById('fProvince').addEventListener('change', onFilter(function(v){ state.province=v; }));
+  document.getElementById('fCategory').addEventListener('change', onFilter(function(v){ state.category=v; }));
+  document.getElementById('fMatch').addEventListener('change',    onFilter(function(v){ state.match=v; }));
+  document.getElementById('fKeyword').addEventListener('input',   onFilter(function(v){ state.kw=v; }));
+  refreshAll();
+});
+</script>
+</body>
+</html>

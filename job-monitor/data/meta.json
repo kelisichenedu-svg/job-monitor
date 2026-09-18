@@ -1,0 +1,13 @@
+{
+  "total": 150,
+  "new": 0,
+  "expiredRemoved": 0,
+  "noiseRemoved": 277,
+  "provinces": 4,
+  "updatedAt": "2026-09-18 01:00:05",
+  "sourcesActive": 8,
+  "stale": false,
+  "highMatch": 3,
+  "coreDirection": 6,
+  "region": "广东/福建/浙江/江苏"
+}
