@@ -1,12 +1,12 @@
 {
-  "total": 164,
-  "new": 0,
+  "total": 206,
+  "new": 42,
   "expiredRemoved": 0,
-  "noiseRemoved": 1075,
+  "noiseRemoved": 1064,
   "provinces": 4,
-  "updatedAt": "2026-09-18 02:41:25",
+  "updatedAt": "2026-09-19 01:07:11",
   "sourcesActive": 12,
   "stale": false,
   "highMatch": 1,
-  "coreDirection": 0
+  "coreDirection": 2
 }
