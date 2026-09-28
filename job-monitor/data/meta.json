@@ -6,7 +6,8 @@
   "provinces": 4,
   "updatedAt": "2026-09-27 01:18:19",
   "sourcesActive": 12,
-  "stale": false,
+  "stale": true,
   "highMatch": 2,
-  "coreDirection": 15
+  "coreDirection": 15,
+  "staleAt": "2026-09-28 01:33:15"
 }
