@@ -1,10 +1,10 @@
 {
-  "total": 460,
-  "new": 0,
+  "total": 462,
+  "new": 2,
   "expiredRemoved": 0,
   "noiseRemoved": 1066,
   "provinces": 4,
-  "updatedAt": "2026-10-04 02:32:25",
+  "updatedAt": "2026-10-05 01:48:51",
   "sourcesActive": 12,
   "stale": false,
   "highMatch": 2,
