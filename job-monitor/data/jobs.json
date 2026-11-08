@@ -141,7 +141,7 @@
     "reason": "研究方向与肿瘤学高度契合；博士后通道，与博士背景直接对口；明确要求博士学历，符合你的学历层次；科研院所平台，科研与临床资源稳定（综合匹配度 88）",
     "talentPlan": "公告未明确，建议电话咨询人事处",
     "link": "https://www.gaoxiaojob.com/announcement/detail/294833.html",
-    "featured": true,
+    "featured": false,
     "coreDirection": true,
     "matchLabel": "极高匹配",
     "source": "高校人才网 · 基础医学",
@@ -166,7 +166,7 @@
     "reason": "研究方向与肿瘤学高度契合；博士后通道，与博士背景直接对口；明确要求博士学历，符合你的学历层次；科研院所平台，科研与临床资源稳定（综合匹配度 87）",
     "talentPlan": "公告未明确，建议电话咨询人事处",
     "link": "https://www.gaoxiaojob.com/announcement/detail/436218.html",
-    "featured": true,
+    "featured": false,
     "coreDirection": true,
     "matchLabel": "极高匹配",
     "source": "高校人才网 · 医学人才",
@@ -8023,6 +8023,31 @@
     "crawledAt": "2026-11-07",
     "isSeed": false,
     "fingerprint": "492bd02dd026d068"
+  },
+  {
+    "id": "auto-2416",
+    "unit": "广州医科大学附属第二医院",
+    "title": "检验科检验技师 面议 博士研究生 临床医学等 2人 广州医科大学附属第二医院 广州",
+    "city": "广州",
+    "salary": "面议",
+    "direction": "未明确方向",
+    "deadline": "详见正文",
+    "matchScore": 67,
+    "province": "广东",
+    "category": "医院",
+    "unitTag": "三甲医院",
+    "description": "检验科检验技师 面议 博士研究生 临床医学等 2人 广州医科大学附属第二医院 广州",
+    "requirements": "要求含：博士",
+    "reason": "明确要求博士学历，符合你的学历层次；三甲医院平台，科研与临床资源稳定（综合匹配度 67）",
+    "talentPlan": "公告未明确，建议电话咨询人事处",
+    "link": "https://www.gaoxiaojob.com/job/detail/2387338.html",
+    "featured": false,
+    "coreDirection": false,
+    "matchLabel": "中等匹配",
+    "source": "高校人才网 · 医学人才",
+    "crawledAt": "2026-11-08",
+    "isSeed": false,
+    "fingerprint": "ff2264f159a78812"
   },
   {
     "id": "auto-0186",
@@ -22272,7 +22297,7 @@
     "source": "高校人才网 · 医学人才",
     "crawledAt": "2026-11-01",
     "isSeed": false,
-    "fingerprint": "7faa80a1ac2e53bf"
+    "fingerprint": "305e429c5d4ebe18"
   },
   {
     "id": "auto-2282",
